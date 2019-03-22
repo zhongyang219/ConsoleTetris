@@ -2,7 +2,9 @@
 //本文件包含宏定义、全局常量、枚举类型和全局函数的定义
 //************************************************************
 #pragma once
-#include<Windows.h>
+#include <Windows.h>
+#include <tchar.h>
+#include <conio.h>
 
 //定义功能键
 #define UP_KEY (-1)			//定义上方向键
@@ -207,7 +209,7 @@ int operator-(SYSTEMTIME a, SYSTEMTIME b)
 int GetKey()
 {
 	int key{ _getch() };
-	if (key == 0xE0 || key == 0)		//如果获得的按键值为0x0E或0则表示按下了功能键
+	if (key == 0xE0/* || key == 0*/)		//如果获得的按键值为0x0E或0则表示按下了功能键
 	{
 		switch (_getch())		//按下了功能键需要再次调用_getch函数
 		{

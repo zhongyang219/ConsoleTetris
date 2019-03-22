@@ -5,6 +5,7 @@
 
 int main()
 {
+	system("mode con:cols=80 lines=25");
 	CursorVisible(false);
 	CUI ui;
 	int key{ 0 }, key2{ 0 };

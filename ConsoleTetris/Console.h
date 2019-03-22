@@ -7,6 +7,21 @@
 
 HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
+//计算一个宽字节字符串的长度占用的半角字符数
+size_t WcharStrHalfWidthLen(const wchar_t* str)
+{
+	size_t size{ 0 };
+	const size_t length{ wcslen(str) };
+	for (int i{ 0 }; i < length; i++)
+	{
+		if (str[i] >= 0 && str[i] < 128)
+			size++;		//如果一个Unicode字符编码在0~127范围内，它占一个半角字符宽度
+		else
+			size += 2;		//否则它占两个半角字符宽度
+	}
+	return size;
+}
+
 //在x,y坐标处输出界面的格子
 void PrintCell(Cell cell, short x, short y)
 {
@@ -16,12 +31,12 @@ void PrintCell(Cell cell, short x, short y)
 	pos.Y = y;
 	if (cell.type == FULL_CELL)
 	{
-		WriteConsoleOutputCharacterA(handle, "■", 2, pos, &unuse);
+		WriteConsoleOutputCharacterW(handle, L"■", 1, pos, &unuse);
 		FillConsoleOutputAttribute(handle, cell.color, 2, pos, &unuse);
 	}
 	else
 	{
-		WriteConsoleOutputCharacterA(handle, "□", 2, pos, &unuse);
+		WriteConsoleOutputCharacterW(handle, L"□", 1, pos, &unuse);
 		FillConsoleOutputAttribute(handle, GRAY, 2, pos, &unuse);
 	}
 }
@@ -34,9 +49,9 @@ void PrintCell(Cell cell, short x, short y, Color color)
 	pos.X = x * 2;
 	pos.Y = y;
 	if (cell.type == FULL_CELL)
-		WriteConsoleOutputCharacterA(handle, "■", 2, pos, &unuse);
+		WriteConsoleOutputCharacterW(handle, L"■", 1, pos, &unuse);
 	else
-		WriteConsoleOutputCharacterA(handle, "□", 2, pos, &unuse);
+		WriteConsoleOutputCharacterW(handle, L"□", 1, pos, &unuse);
 	FillConsoleOutputAttribute(handle, color, 2, pos, &unuse);
 }
 
@@ -48,23 +63,24 @@ void PrintInt(int num, short x, short y, Color color)
 	ULONG unuse;
 	pos.X = x * 2;
 	pos.Y = y;
-	char str[20];
-	_itoa_s(num, str, 10);
-	size_t len{ strlen(str) };
-	WriteConsoleOutputCharacterA(handle, str, len, pos, &unuse);		//输出字符
+	wchar_t str[20];
+	_itow_s(num, str, 10);
+	size_t len{ wcslen(str) };
+	WriteConsoleOutputCharacterW(handle, str, len, pos, &unuse);		//输出字符
 	FillConsoleOutputAttribute(handle, color, len, pos, &unuse);		//设置颜色
 }
 
 //在界面的x,y坐标处输出一个字符串
-void PrintString(char *str, short x, short y, Color color)
+void PrintString(const wchar_t *str, short x, short y, Color color)
 {
 	COORD pos;
 	ULONG unuse;
 	pos.X = x * 2;
 	pos.Y = y;
-	size_t len{ strlen(str) };
-	WriteConsoleOutputCharacterA(handle, str, len, pos, &unuse);
-	FillConsoleOutputAttribute(handle, color, len, pos, &unuse);		//设置颜色
+	size_t len{ wcslen(str) };
+	size_t len_halfwidth{ WcharStrHalfWidthLen(str) };	//字符串占用半角字符数
+	WriteConsoleOutputCharacterW(handle, str, len, pos, &unuse);
+	FillConsoleOutputAttribute(handle, color, len_halfwidth, pos, &unuse);		//设置颜色
 }
 
 //光标移动到x,y坐标
@@ -79,23 +95,18 @@ void GotoXY(short x, short y)
 //在界面的x,y处输出不同颜色的汉字
 void PrintColor(short x, short y, Color color)
 {
-	COORD pos;
-	ULONG unuse;
-	pos.X = x * 2;
-	pos.Y = y;
 	switch (color)
 	{
-		case WHITE: WriteConsoleOutputCharacterA(handle, "白色  ", 6, pos, &unuse); break;
-		case RED: WriteConsoleOutputCharacterA(handle, "红色  ", 6, pos, &unuse); break;
-		case GREEN: WriteConsoleOutputCharacterA(handle, "绿色  ", 6, pos, &unuse); break;
-		case BLUE: WriteConsoleOutputCharacterA(handle, "蓝色  ", 6, pos, &unuse); break;
-		case YELLOW: WriteConsoleOutputCharacterA(handle, "黄色  ", 6, pos, &unuse); break;
-		case CYAN: WriteConsoleOutputCharacterA(handle, "蓝绿色", 6, pos, &unuse); break;
-		case PURPLE: WriteConsoleOutputCharacterA(handle, "紫色  ", 6, pos, &unuse); break;
-		case GRAY:WriteConsoleOutputCharacterA(handle, "灰色  ", 6, pos, &unuse); break;
+		case WHITE: PrintString(L"白色  ", x, y, color); break;
+		case RED: PrintString(L"红色  ", x, y, color); break;
+		case GREEN: PrintString(L"绿色  ", x, y, color); break;
+		case BLUE: PrintString(L"蓝色  ", x, y, color); break;
+		case YELLOW: PrintString(L"黄色  ", x, y, color); break;
+		case CYAN: PrintString(L"蓝绿色", x, y, color); break;
+		case PURPLE: PrintString(L"紫色  ", x, y, color); break;
+		case GRAY:PrintString(L"灰色  ", x, y, color); break;
 		default: break;
 	}
-	FillConsoleOutputAttribute(handle, color, 6, pos, &unuse);
 }
 
 //显示或隐藏光标
@@ -142,56 +153,43 @@ void ClearBomb(int x, int y)
 //用于在键位设定中输出一个按键的信息
 void PrintKey(int key, short x, short y, Color color)
 {
-	COORD pos;
-	ULONG unuse;
-	pos.X = x * 2;
-	pos.Y = y;
-	char buf[2];
+	wchar_t buf[2];
 	/*if (IllegalControlKey(key))
 	{
-		WriteConsoleOutputCharacterA(handle, "按键非法！", 10, pos, &unuse);
+		WriteConsoleOutputCharacterW(handle, "按键非法！", 10, pos, &unuse);
 		FillConsoleOutputAttribute(handle, RED, 10, pos, &unuse);
 	}*/
 	if(key != UP_KEY && key != DOWN_KEY && key != LEFT_KEY && key != RIGHT_KEY && (key>127 || key<=0))
 	{
-		WriteConsoleOutputCharacterA(handle, "未设定", 6, pos, &unuse);
-		FillConsoleOutputAttribute(handle, RED, 6, pos, &unuse);
+		PrintString(L"未设定", x, y, RED);
 		return;
 	}
 	switch (key)
 	{
 		case ENTER_KEY:
-			WriteConsoleOutputCharacterA(handle, "回车键", 6, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 6, pos, &unuse);
+			PrintString(L"回车键", x, y, color);
 			break;
 		case ' ':
-			WriteConsoleOutputCharacterA(handle, "空格键", 6, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 6, pos, &unuse);
+			PrintString(L"空格键", x, y, color);
 			break;
 		case 9:
-			WriteConsoleOutputCharacterA(handle, "Tab键", 5, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 5, pos, &unuse);
+			PrintString(L"Tab键", x, y, color);
 			break;
 		case UP_KEY:
-			WriteConsoleOutputCharacterA(handle, "↑", 2, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 2, pos, &unuse);
+			PrintString(L"↑", x, y, color);
 			break;
 		case DOWN_KEY:
-			WriteConsoleOutputCharacterA(handle, "↓", 2, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 2, pos, &unuse);
+			PrintString(L"↓", x, y, color);
 			break;
 		case LEFT_KEY:
-			WriteConsoleOutputCharacterA(handle, "←", 2, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 2, pos, &unuse);
+			PrintString(L"←", x, y, color);
 			break;
 		case RIGHT_KEY:
-			WriteConsoleOutputCharacterA(handle, "→", 2, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 2, pos, &unuse);
+			PrintString(L"→", x, y, color);
 			break;
 		default:
 			buf[0] = static_cast<char>(key);
 			buf[1] = '\0';
-			WriteConsoleOutputCharacterA(handle, buf, 1, pos, &unuse);
-			FillConsoleOutputAttribute(handle, color, 1, pos, &unuse);
+			PrintString(buf, x, y, color);
 	}
 }

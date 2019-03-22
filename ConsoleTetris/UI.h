@@ -106,29 +106,6 @@ public:
 
 };
 
-//静态数据成员初始化
-//bool CUI::m_clear_animation{ true };
-//int CUI::m_clear_animation_speed{ 40 };
-//bool CUI::m_allow_level_up{ true };
-//int CUI::m_score_per_level{ 150 };
-//Color CUI::m_color_table[9] {WHITE, RED, GREEN, BLUE, YELLOW, CYAN, PURPLE, GRAY, WHITE};
-//bool CUI::m_invisible_mode{ false };
-//int CUI::m_invisible_mode_difficulty{ 0 };
-//bool CUI::m_double_player{ false };		//双人模式
-//int CUI::m_width{ 10 };		//界面显示的宽度
-//
-//int CUI::m_1_left_key{ 'A' };		//方块左移键
-//int CUI::m_1_right_key{ 'D' };		//方块右移键
-//int CUI::m_1_down_key{ 'S' };		//方块下移键
-//int CUI::m_1_rotate_key{ 'W' };		//方块旋转键
-//int CUI::m_1_sink_key{ SPACE_KEY };		//方块直接下落键
-//
-//int CUI::m_2_left_key{ LEFT_KEY };		//方块左移键
-//int CUI::m_2_right_key{ RIGHT_KEY };		//方块右移键
-//int CUI::m_2_down_key{ DOWN_KEY };		//方块下移键
-//int CUI::m_2_rotate_key{ UP_KEY };		//方块旋转键
-//int CUI::m_2_sink_key{ '/' };		//方块直接下落键
-
 
 CUI::CUI()
 {
@@ -197,12 +174,12 @@ inline bool CUI::BlockLandTest(Player player)
 	if (player == PLAYER1)
 	{
 		land_flag = CurrentBlock1.LandTest(m_board, m_width);
-		if (land_flag && m_sound_effect && CurrentBlock1.GetBlockType() != B_BOMB) PlaySoundA("./sound/land.wav", NULL, SND_ASYNC | SND_FILENAME);
+		if (land_flag && m_sound_effect && CurrentBlock1.GetBlockType() != B_BOMB) PlaySound(_T("./sound/land.wav"), NULL, SND_ASYNC | SND_FILENAME);
 	}
 	else
 	{
 		land_flag = CurrentBlock2.LandTest(m_board, m_width);
-		if (land_flag && m_sound_effect && CurrentBlock2.GetBlockType() != B_BOMB) PlaySoundA("./sound/land.wav", NULL, SND_ASYNC | SND_FILENAME);
+		if (land_flag && m_sound_effect && CurrentBlock2.GetBlockType() != B_BOMB) PlaySound(_T("./sound/land.wav"), NULL, SND_ASYNC | SND_FILENAME);
 	}
 	return land_flag;
 }
@@ -221,7 +198,7 @@ void CUI::ClearLine()
 	int clear_count{ 0 };		//统计消除行的数量
 	if(CurrentBlock1.GetBlockType() == B_BOMB)		//当前方块是炸弹时消除炸弹所在区域及其下方4x4共4x8区域内的所有方块
 	{
-		if (m_sound_effect) PlaySoundA("./sound/bomb.wav", NULL, SND_ASYNC | SND_FILENAME);
+		if (m_sound_effect) PlaySound(_T("./sound/bomb.wav"), NULL, SND_ASYNC | SND_FILENAME);
 		for(i = 0; i<4; i++)
 			for(j = 0; j<8; j++)
 			{
@@ -235,7 +212,7 @@ void CUI::ClearLine()
 	}
 	else if (CurrentBlock2.GetBlockType() == B_BOMB)
 	{
-		if (m_sound_effect) PlaySoundA("./sound/bomb.wav", NULL, SND_ASYNC | SND_FILENAME);
+		if (m_sound_effect) PlaySound(_T("./sound/bomb.wav"), NULL, SND_ASYNC | SND_FILENAME);
 		for (i = 0; i<4; i++)
 			for (j = 0; j<8; j++)
 			{
@@ -260,7 +237,7 @@ void CUI::ClearLine()
 
 			if (clear_flag)		//如果当前行可以消除
 			{
-				if (m_sound_effect) PlaySoundA("./sound/clear.wav", NULL, SND_ASYNC | SND_FILENAME);
+				if (m_sound_effect) PlaySound(_T("./sound/clear.wav"), NULL, SND_ASYNC | SND_FILENAME);
 				if (m_invisible_mode && m_invisible_mode_difficulty<=1 && clear_count == 0)		//隐形模式且难度为低或中时如果有消除行，则在消除第一行之前显示界面500毫秒
 				{
 					DrawBoardVisible();
@@ -430,7 +407,7 @@ void CUI::KeyDetect(int key)
 	}
 	else if (key == m_1_rotate_key)
 	{
-		if (m_sound_effect) PlaySoundA("./sound/rotate.wav", NULL, SND_ASYNC | SND_FILENAME);
+		if (m_sound_effect) PlaySound(_T("./sound/rotate.wav"), NULL, SND_ASYNC | SND_FILENAME);
 		CurrentBlock1.RotateBlock(m_board, m_width);		//执行旋转操作
 	}
 	else if (key == m_1_sink_key)
@@ -453,7 +430,7 @@ void CUI::KeyDetect(int key)
 	}
 	else if (key == m_2_rotate_key && m_double_player)
 	{
-		if (m_sound_effect) PlaySoundA("./sound/rotate.wav", NULL, SND_ASYNC | SND_FILENAME);
+		if (m_sound_effect) PlaySound(_T("./sound/rotate.wav"), NULL, SND_ASYNC | SND_FILENAME);
 		CurrentBlock2.RotateBlock(m_board, m_width);		//执行旋转操作
 	}
 	else if (key == m_2_sink_key && m_double_player)
@@ -548,69 +525,69 @@ void CUI::ShowInfo() const
 	const int y_left_info{ 4 };		//左侧信息的起始y坐标
 	const int x_right_info{ 29 };		//右侧信息的起始x坐标
 	const int y_right_info{ 3 };		//右侧信息的起始y坐标
-	PrintString("俄罗斯方块    版本：", 2, 0, WHITE);
-	PrintString("1.93", 12, 0, YELLOW);
-	PrintString("作者：ZY    邮箱：380526481@qq.com", 16, 0, WHITE);
-	PrintString("得分：", x_left_info, y_left_info, WHITE);
+	PrintString(L"俄罗斯方块    版本：", 2, 0, WHITE);
+	PrintString(L"1.93", 12, 0, YELLOW);
+	PrintString(L"作者：ZY    邮箱：380526481@qq.com", 16, 0, WHITE);
+	PrintString(L"得分：", x_left_info, y_left_info, WHITE);
 	PrintInt(m_score, x_left_info + 3, y_left_info, CYAN);
 	if (m_allow_level_up)		//只有允许升级时才显示等级信息
 	{
-		PrintString("等级：", x_left_info, y_left_info + 2, WHITE);
+		PrintString(L"等级：", x_left_info, y_left_info + 2, WHITE);
 		PrintInt(m_level, x_left_info + 3, y_left_info + 2, CYAN);
 	}
 	
 	if (m_strip_number > 0)
 	{
-		PrintString("1.长条", x_left_info, y_left_info + 6, GREEN);
-		PrintString("×", x_left_info + 3, y_left_info + 6, YELLOW);
-		PrintString("   ", x_left_info + 4, y_left_info + 6, WHITE);
+		PrintString(L"1.长条", x_left_info, y_left_info + 6, GREEN);
+		PrintString(L"×", x_left_info + 3, y_left_info + 6, YELLOW);
+		PrintString(L"   ", x_left_info + 4, y_left_info + 6, WHITE);
 		PrintInt(m_strip_number, x_left_info + 4, y_left_info + 6, YELLOW);
 	}
-	else PrintString("           ", x_left_info, y_left_info + 6, WHITE);
+	else PrintString(L"           ", x_left_info, y_left_info + 6, WHITE);
 	if (m_bomb_number > 0)
 	{
-		PrintString("2.炸弹", x_left_info, y_left_info + 7, GREEN);
-		PrintString("×", x_left_info + 3, y_left_info + 7, YELLOW);
-		PrintString("   ", x_left_info + 4, y_left_info + 7, WHITE);
+		PrintString(L"2.炸弹", x_left_info, y_left_info + 7, GREEN);
+		PrintString(L"×", x_left_info + 3, y_left_info + 7, YELLOW);
+		PrintString(L"   ", x_left_info + 4, y_left_info + 7, WHITE);
 		PrintInt(m_bomb_number, x_left_info + 4, y_left_info + 7, YELLOW);
 	}
-	else PrintString("           ", x_left_info, y_left_info + 7, WHITE);
+	else PrintString(L"           ", x_left_info, y_left_info + 7, WHITE);
 	if (m_pierce_number > 0)
 	{
-		PrintString("3.穿甲弹", x_left_info, y_left_info + 8, GREEN);
-		PrintString("×", x_left_info + 4, y_left_info + 8, YELLOW);
-		PrintString("   ", x_left_info + 5, y_left_info + 8, WHITE);
+		PrintString(L"3.穿甲弹", x_left_info, y_left_info + 8, GREEN);
+		PrintString(L"×", x_left_info + 4, y_left_info + 8, YELLOW);
+		PrintString(L"   ", x_left_info + 5, y_left_info + 8, WHITE);
 		PrintInt(m_pierce_number, x_left_info + 5, y_left_info + 8, YELLOW);
 	}
-	else PrintString("             ", x_left_info, y_left_info + 8, WHITE);
+	else PrintString(L"             ", x_left_info, y_left_info + 8, WHITE);
 
-	PrintString(m_double_player ? "玩家1下一个方块：" : "下一个方块：", x_right_info, y_right_info, WHITE);
+	PrintString(m_double_player ? L"玩家1下一个方块：" : L"下一个方块：", x_right_info, y_right_info, WHITE);
 	NextBlock1.PrintBlock(x_right_info + 1, y_right_info + 2);	//输出玩家1的下一个方块
 
 	if (m_double_player)		//只有双人模式下才显示玩家2的下一个方块
 	{
-		PrintString("玩家2下一个方块：", x_right_info, y_right_info+7, WHITE);
+		PrintString(L"玩家2下一个方块：", x_right_info, y_right_info+7, WHITE);
 		NextBlock2.PrintBlock(x_right_info + 1, y_right_info + 9);	//输出玩家2的下一个方块
 	}
 
-	PrintString("帮助：", x_right_info, y_right_info + 14, WHITE);
-	PrintString("按回车键暂停，", x_right_info, y_right_info + 15, WHITE);
-	PrintString("按ESC键退出，", x_right_info, y_right_info + 16, WHITE);
-	PrintString("按O键进入选项设置，", x_right_info, y_right_info + 17, WHITE);
-	PrintString("按H键查看详细帮助信息。", x_right_info, y_right_info + 18, WHITE);
+	PrintString(L"帮助：", x_right_info, y_right_info + 14, WHITE);
+	PrintString(L"按回车键暂停，", x_right_info, y_right_info + 15, WHITE);
+	PrintString(L"按ESC键退出，", x_right_info, y_right_info + 16, WHITE);
+	PrintString(L"按O键进入选项设置，", x_right_info, y_right_info + 17, WHITE);
+	PrintString(L"按H键查看详细帮助信息。", x_right_info, y_right_info + 18, WHITE);
 }
 
 void CUI::ShowHelpInfo() const
 {
 	const int x{ 9 }, y{ 3 };		//选项界面字符输出的起始位置
 	system("cls");
-	PrintString("详细帮助", x, y, CYAN);
-	PrintString("玩家1默认按键：", x, y + 2, WHITE);
-	PrintString("A：左移；D：右移；S：下移；W：旋转；空格：直接下落", x, y + 3, WHITE);
-	PrintString("玩家2默认按键：", x, y + 4, WHITE);
-	PrintString("←：左移；→：右移；↓：下移；↑：旋转；/：直接下落", x, y + 5, WHITE);
-	PrintString("玩家1按1、2、3键使用道具，玩家2按8、9、0键使用道具", x, y + 6, WHITE);
-	PrintString("按ESC键返回。", x, y + 8, GRAY);
+	PrintString(L"详细帮助", x, y, CYAN);
+	PrintString(L"玩家1默认按键：", x, y + 2, WHITE);
+	PrintString(L"A：左移；D：右移；S：下移；W：旋转；空格：直接下落", x, y + 3, WHITE);
+	PrintString(L"玩家2默认按键：", x, y + 4, WHITE);
+	PrintString(L"←：左移；→：右移；↓：下移；↑：旋转；/：直接下落", x, y + 5, WHITE);
+	PrintString(L"玩家1按1、2、3键使用道具，玩家2按8、9、0键使用道具", x, y + 6, WHITE);
+	PrintString(L"按ESC键返回。", x, y + 8, GRAY);
 	while (GetKey() != QUIT_KEY) {}
 	system("cls");
 }
@@ -621,8 +598,8 @@ bool CUI::ShowGameOver() const
 	for (i = 0; i < m_width; i++)
 		for (j = 0; j < HEIGHT; j++)
 			PrintCell(m_board[i][j], i + m_board_x, j + BOARD_Y, RED);
-	PrintString("               Game Over!               ", BOARD_X, BOARD_Y + 10, RED);
-	PrintString("          是否继续?是(Y)|否(N)          ", BOARD_X, BOARD_Y + 11, RED);
+	PrintString(L"               Game Over!               ", BOARD_X, BOARD_Y + 10, RED);
+	PrintString(L"          是否继续?是(Y)|否(N)          ", BOARD_X, BOARD_Y + 11, RED);
 	while (true)
 	{
 		switch (GetKey())
@@ -641,8 +618,8 @@ void CUI::ShowPause() const
 	for (i = 0; i < m_width; i++)
 		for (j = 0; j < HEIGHT; j++)
 			PrintCell(m_board[i][j], i + m_board_x, j + BOARD_Y, CYAN);
-	PrintString("        已暂停，按回车键继续……        ", BOARD_X, BOARD_Y+9, CYAN);
-	PrintString("      S：保存    L：载入    O：选项     ", BOARD_X, BOARD_Y + 10, CYAN);
+	PrintString(L"        已暂停，按回车键继续……        ", BOARD_X, BOARD_Y+9, CYAN);
+	PrintString(L"      S：保存    L：载入    O：选项     ", BOARD_X, BOARD_Y + 10, CYAN);
 }
 
 void CUI::Pause()
@@ -662,12 +639,12 @@ void CUI::Pause()
 			ClearCurrentBlock(PLAYER1, false);		//保存前必须要先清除当前方块
 			ClearCurrentBlock(PLAYER2, false);
 			SaveData();
-			PrintString("                已保存。                ", BOARD_X, BOARD_Y+11, CYAN);
+			PrintString(L"                已保存。                ", BOARD_X, BOARD_Y+11, CYAN);
 		}
 		if (key == 'L')		//按L键载入
 		{
 			LoadData();
-			PrintString("                已载入。                ", BOARD_X, BOARD_Y + 11, CYAN);
+			PrintString(L"                已载入。                ", BOARD_X, BOARD_Y + 11, CYAN);
 			SetNextBlock(PLAYER1);			//载入之后舍弃当前方块，设置下一个方块
 			SetNextBlock(PLAYER2);
 			m_load_flag = true;
@@ -866,21 +843,21 @@ void CUI::LoadSettings()
 inline void CUI::ShowSettingsInfo(int x, int y) const
 {
 	system("cls");
-	PrintString("选项设置", x, y, CYAN);
-	PrintString("1、显示消除动画：", x, y+2, WHITE);
-	PrintString("2、消除动画间隔时间（单位：ms）：", x, y + 3, WHITE);
-	PrintString("3、允许升级：", x, y + 4, WHITE);
-	PrintString("4、提升1级所需的得分：", x, y + 5, WHITE);
-	PrintString("5、退出时自动存档：", x, y + 6, WHITE);
-	PrintString("6、隐形模式：", x, y + 7, WHITE);
-	PrintString("7、隐形模式难度：", x, y + 8, WHITE);
-	PrintString("8、方块颜色设置", x, y + 9, WHITE);
-	PrintString("9、键位设置", x, y + 10, WHITE);
-	PrintString("10、双人模式：", x, y + 11, WHITE);
-	PrintString("11、界面宽度：", x, y + 12, WHITE);
-	PrintString("12、游戏音效：", x, y + 13, WHITE);
+	PrintString(L"选项设置", x, y, CYAN);
+	PrintString(L"1、显示消除动画：", x, y+2, WHITE);
+	PrintString(L"2、消除动画间隔时间（单位：ms）：", x, y + 3, WHITE);
+	PrintString(L"3、允许升级：", x, y + 4, WHITE);
+	PrintString(L"4、提升1级所需的得分：", x, y + 5, WHITE);
+	PrintString(L"5、退出时自动存档：", x, y + 6, WHITE);
+	PrintString(L"6、隐形模式：", x, y + 7, WHITE);
+	PrintString(L"7、隐形模式难度：", x, y + 8, WHITE);
+	PrintString(L"8、方块颜色设置", x, y + 9, WHITE);
+	PrintString(L"9、键位设置", x, y + 10, WHITE);
+	PrintString(L"10、双人模式：", x, y + 11, WHITE);
+	PrintString(L"11、界面宽度：", x, y + 12, WHITE);
+	PrintString(L"12、游戏音效：", x, y + 13, WHITE);
 
-	PrintString("按上下方向键选择项目，回车键确认，ESC键返回", x, y+16, GRAY);
+	PrintString(L"按上下方向键选择项目，回车键确认，ESC键返回", x, y+16, GRAY);
 }
 
 void CUI::OptionSettings()
@@ -893,27 +870,27 @@ void CUI::OptionSettings()
 	while (true)
 	{
 		//显示选项界面中需要变化的信息
-		PrintString(m_clear_animation ? "是" : "否", x + 9, y + 2, YELLOW);
+		PrintString(m_clear_animation ? L"是" : L"否", x + 9, y + 2, YELLOW);
 		PrintInt(m_clear_animation_speed, x + 17, y + 3, YELLOW);
-		PrintString(m_allow_level_up ? "是" : "否", x + 7, y + 4, YELLOW);
+		PrintString(m_allow_level_up ? L"是" : L"否", x + 7, y + 4, YELLOW);
 		PrintInt(m_score_per_level, x + 12, y + 5, YELLOW);
-		PrintString(m_atuo_save ? "是" : "否", x + 10, y + 6, YELLOW);
-		PrintString(m_invisible_mode ? "开" : "关", x + 7, y + 7, YELLOW);
+		PrintString(m_atuo_save ? L"是" : L"否", x + 10, y + 6, YELLOW);
+		PrintString(m_invisible_mode ? L"开" : L"关", x + 7, y + 7, YELLOW);
 		switch(m_invisible_mode_difficulty)
 		{
-			case 0: PrintString("低", x + 9, y + 8, YELLOW); break;
-			case 1: PrintString("中", x + 9, y + 8, YELLOW); break;
-			case 2: PrintString("高", x + 9, y + 8, YELLOW); break;
+			case 0: PrintString(L"低", x + 9, y + 8, YELLOW); break;
+			case 1: PrintString(L"中", x + 9, y + 8, YELLOW); break;
+			case 2: PrintString(L"高", x + 9, y + 8, YELLOW); break;
 			default: break;
 		}
-		PrintString(m_double_player ? "开" : "关", x + 7, y + 11, YELLOW);
+		PrintString(m_double_player ? L"开" : L"关", x + 7, y + 11, YELLOW);
 		PrintInt(m_width, x + 7, y + 12, YELLOW);
-		PrintString(m_sound_effect ? "开" : "关", x + 7, y + 13, YELLOW);
+		PrintString(m_sound_effect ? L"开" : L"关", x + 7, y + 13, YELLOW);
 
 		//输出选项指示字符
 		for (int i{ 1 }; i <= max_selection; i++)
-			PrintString("  ", x - 2, y + 1 + i, WHITE);		//先在输出选项指示字符的区域输出空格
-		PrintString("◆", x - 2, y + 1 + item_select, CYAN);
+			PrintString(L"  ", x - 2, y + 1 + i, WHITE);		//先在输出选项指示字符的区域输出空格
+		PrintString(L"◆", x - 2, y + 1 + item_select, CYAN);
 
 		switch (GetKey())
 		{
@@ -936,7 +913,7 @@ void CUI::OptionSettings()
 						if (m_clear_animation_speed < 5) m_clear_animation_speed = 5;		//消除动画的间隔时间不允许小于5毫秒
 						if (m_clear_animation_speed > 9999) m_clear_animation_speed = 9999;		//消除动画的间隔时间不允许大于9999毫秒
 						CursorVisible(false);
-						PrintString("          ", x + 17, y + 3, WHITE);		//用空格覆盖掉原来的字符
+						PrintString(L"          ", x + 17, y + 3, WHITE);		//用空格覆盖掉原来的字符
 						break;
 					case 3:
 						m_allow_level_up = !m_allow_level_up;
@@ -949,7 +926,7 @@ void CUI::OptionSettings()
 						if (m_score_per_level < 1) m_score_per_level = 1;		//每升一级需要的得分不允许小于1
 						CalculateLevel();
 						CursorVisible(false);
-						PrintString("          ", x + 12, y + 5, WHITE);			//用空格覆盖掉原来的字符
+						PrintString(L"          ", x + 12, y + 5, WHITE);			//用空格覆盖掉原来的字符
 						break;
 					case 5:
 						m_atuo_save = !m_atuo_save;
@@ -989,7 +966,7 @@ void CUI::OptionSettings()
 						if (m_width < 10) m_width = 10;
 						if (m_width > 20) m_width = 20;
 						CursorVisible(false);
-						PrintString("  ", x + 7, y + 12, WHITE);			//用空格覆盖掉原来的字符
+						PrintString(L"  ", x + 7, y + 12, WHITE);			//用空格覆盖掉原来的字符
 
 						CalculateBoardXAndBlockPosition();
 						NextBlock1.SetXPosition(m_double_player ? m_block1_x : m_width / 2 - 1);		//修改界面宽度后，重新设置下一个方块的位置
@@ -1023,24 +1000,24 @@ void CUI::ColorSettings()
 	int color_select{ 1 };		//方块颜色设置中选中的项目
 	system("cls");
 	//显示选项界面中固定的信息
-	PrintString("方块颜色设置", x, y, CYAN);
-	PrintString("I型：", x, y + 2, WHITE);
-	PrintString("L型：", x, y + 3, WHITE);
-	PrintString("J型：", x, y + 4, WHITE);
-	PrintString("Z型：", x, y + 5, WHITE);
-	PrintString("S型：", x, y + 6, WHITE);
-	PrintString("T型：", x, y + 7, WHITE);
-	PrintString("O型：", x, y + 8, WHITE);
-	PrintString("恢复默认颜色", x, y + 9, WHITE);
+	PrintString(L"方块颜色设置", x, y, CYAN);
+	PrintString(L"I型：", x, y + 2, WHITE);
+	PrintString(L"L型：", x, y + 3, WHITE);
+	PrintString(L"J型：", x, y + 4, WHITE);
+	PrintString(L"Z型：", x, y + 5, WHITE);
+	PrintString(L"S型：", x, y + 6, WHITE);
+	PrintString(L"T型：", x, y + 7, WHITE);
+	PrintString(L"O型：", x, y + 8, WHITE);
+	PrintString(L"恢复默认颜色", x, y + 9, WHITE);
 	
-	PrintString("按上下方向键选择项目，左右方向键选择颜色，ESC键返回", x, y+12, GRAY);
+	PrintString(L"按上下方向键选择项目，左右方向键选择颜色，ESC键返回", x, y+12, GRAY);
 
 	while (true)
 	{
 		//输出颜色设置的选项指示字符
 		for (int i{ 1 }; i <= max_selection; i++)
-			PrintString("  ", x - 2, y + 1 + i, WHITE);
-		PrintString("◆", x - 2, y + 1 + color_select, CYAN);
+			PrintString(L"  ", x - 2, y + 1 + i, WHITE);
+		PrintString(L"◆", x - 2, y + 1 + color_select, CYAN);
 		//显示选项界面中需要变化的信息
 		PrintColor(x + 3, y + 2, m_color_table[B_I]);
 		PrintColor(x + 3, y + 3, m_color_table[B_L]);
@@ -1106,27 +1083,27 @@ void CUI::KeySettings()
 	int item_select{ 1 };		//键位设置中选中的项目
 	system("cls");
 	//显示选项界面中固定的信息
-	PrintString("键位设置", x, y, CYAN);
-	PrintString("玩家1左移键：", x, y + 2, WHITE);
-	PrintString("玩家1右移键：", x, y + 3, WHITE);
-	PrintString("玩家1下移键：", x, y + 4, WHITE);
-	PrintString("玩家1旋转键：", x, y + 5, WHITE);
-	PrintString("玩家1直接下落键：", x, y + 6, WHITE);
-	PrintString("玩家2左移键：", x, y + 7, WHITE);
-	PrintString("玩家2右移键：", x, y + 8, WHITE);
-	PrintString("玩家2下移键：", x, y + 9, WHITE);
-	PrintString("玩家2旋转键：", x, y + 10, WHITE);
-	PrintString("玩家2直接下落键：", x, y + 11, WHITE);
-	PrintString("恢复默认设定", x, y + 12, WHITE);
+	PrintString(L"键位设置", x, y, CYAN);
+	PrintString(L"玩家1左移键：", x, y + 2, WHITE);
+	PrintString(L"玩家1右移键：", x, y + 3, WHITE);
+	PrintString(L"玩家1下移键：", x, y + 4, WHITE);
+	PrintString(L"玩家1旋转键：", x, y + 5, WHITE);
+	PrintString(L"玩家1直接下落键：", x, y + 6, WHITE);
+	PrintString(L"玩家2左移键：", x, y + 7, WHITE);
+	PrintString(L"玩家2右移键：", x, y + 8, WHITE);
+	PrintString(L"玩家2下移键：", x, y + 9, WHITE);
+	PrintString(L"玩家2旋转键：", x, y + 10, WHITE);
+	PrintString(L"玩家2直接下落键：", x, y + 11, WHITE);
+	PrintString(L"恢复默认设定", x, y + 12, WHITE);
 	
-	PrintString("按上下方向键选择项目，回车键进入相应的键位设置，ESC键返回", x, y+15, GRAY);
+	PrintString(L"按上下方向键选择项目，回车键进入相应的键位设置，ESC键返回", x, y+15, GRAY);
 
 	while (true)
 	{
 		//输出键位设置的选项指示字符
 		for (int i{ 1 }; i <= max_selection; i++)
-			PrintString("  ", x - 2, y + 1 + i, WHITE);
-		PrintString("◆", x - 2, y + 1 + item_select, CYAN);
+			PrintString(L"  ", x - 2, y + 1 + i, WHITE);
+		PrintString(L"◆", x - 2, y + 1 + item_select, CYAN);
 		//显示选项界面中需要变化的信息
 		PrintKey(m_1_left_key, x + 7, y + 2, YELLOW);
 		PrintKey(m_1_right_key, x + 7, y + 3, YELLOW);
@@ -1159,10 +1136,10 @@ void CUI::KeySettings()
 						{
 							m_1_left_key = GetKey();
 							if (IllegalControlKey(m_1_left_key))
-								PrintString("非法按键，请重新输入！",x + 7, y + 2, RED);
+								PrintString(L"非法按键，请重新输入！",x + 7, y + 2, RED);
 							else break;
 						}
-						PrintString("                      ",x + 7, y + 2, WHITE);
+						PrintString(L"                      ",x + 7, y + 2, WHITE);
 						CursorVisible(false);
 						break;
 					case 2:
@@ -1172,10 +1149,10 @@ void CUI::KeySettings()
 						{
 							m_1_right_key = GetKey();
 							if (IllegalControlKey(m_1_right_key))
-								PrintString("非法按键，请重新输入！",x + 7, y + 3, RED);
+								PrintString(L"非法按键，请重新输入！",x + 7, y + 3, RED);
 							else break;
 						}
-						PrintString("                      ",x + 7, y + 3, WHITE);
+						PrintString(L"                      ",x + 7, y + 3, WHITE);
 						CursorVisible(false);
 						break;
 					case 3:
@@ -1185,10 +1162,10 @@ void CUI::KeySettings()
 						{
 							m_1_down_key = GetKey();
 							if (IllegalControlKey(m_1_down_key))
-								PrintString("非法按键，请重新输入！",x + 7, y + 4, RED);
+								PrintString(L"非法按键，请重新输入！",x + 7, y + 4, RED);
 							else break;
 						}
-						PrintString("                      ",x + 7, y + 4, WHITE);
+						PrintString(L"                      ",x + 7, y + 4, WHITE);
 						CursorVisible(false);
 						break;
 					case 4:
@@ -1198,10 +1175,10 @@ void CUI::KeySettings()
 						{
 							m_1_rotate_key = GetKey();
 							if (IllegalControlKey(m_1_rotate_key))
-								PrintString("非法按键，请重新输入！",x + 7, y + 5, RED);
+								PrintString(L"非法按键，请重新输入！",x + 7, y + 5, RED);
 							else break;
 						}
-						PrintString("                      ",x + 7, y + 5, WHITE);
+						PrintString(L"                      ",x + 7, y + 5, WHITE);
 						CursorVisible(false);
 						break;
 					case 5:
@@ -1211,10 +1188,10 @@ void CUI::KeySettings()
 						{
 							m_1_sink_key = GetKey();
 							if (IllegalControlKey(m_1_sink_key))
-								PrintString("非法按键，请重新输入！",x + 9, y + 6, RED);
+								PrintString(L"非法按键，请重新输入！",x + 9, y + 6, RED);
 							else break;
 						}
-						PrintString("                      ",x + 9, y + 6, WHITE);
+						PrintString(L"                      ",x + 9, y + 6, WHITE);
 						CursorVisible(false);
 						break;
 					case 6:
@@ -1224,10 +1201,10 @@ void CUI::KeySettings()
 						{
 							m_2_left_key = GetKey();
 							if (IllegalControlKey(m_2_left_key))
-								PrintString("非法按键，请重新输入！", x + 7, y + 7, RED);
+								PrintString(L"非法按键，请重新输入！", x + 7, y + 7, RED);
 							else break;
 						}
-						PrintString("                      ", x + 7, y + 7, WHITE);
+						PrintString(L"                      ", x + 7, y + 7, WHITE);
 						CursorVisible(false);
 						break;
 					case 7:
@@ -1237,10 +1214,10 @@ void CUI::KeySettings()
 						{
 							m_2_right_key = GetKey();
 							if (IllegalControlKey(m_2_right_key))
-								PrintString("非法按键，请重新输入！", x + 7, y + 8, RED);
+								PrintString(L"非法按键，请重新输入！", x + 7, y + 8, RED);
 							else break;
 						}
-						PrintString("                      ", x + 7, y + 8, WHITE);
+						PrintString(L"                      ", x + 7, y + 8, WHITE);
 						CursorVisible(false);
 						break;
 					case 8:
@@ -1250,10 +1227,10 @@ void CUI::KeySettings()
 						{
 							m_2_down_key = GetKey();
 							if (IllegalControlKey(m_2_down_key))
-								PrintString("非法按键，请重新输入！", x + 7, y + 9, RED);
+								PrintString(L"非法按键，请重新输入！", x + 7, y + 9, RED);
 							else break;
 						}
-						PrintString("                      ", x + 7, y + 9, WHITE);
+						PrintString(L"                      ", x + 7, y + 9, WHITE);
 						CursorVisible(false);
 						break;
 					case 9:
@@ -1263,10 +1240,10 @@ void CUI::KeySettings()
 						{
 							m_2_rotate_key = GetKey();
 							if (IllegalControlKey(m_2_rotate_key))
-								PrintString("非法按键，请重新输入！", x + 7, y + 10, RED);
+								PrintString(L"非法按键，请重新输入！", x + 7, y + 10, RED);
 							else break;
 						}
-						PrintString("                      ", x + 7, y + 10, WHITE);
+						PrintString(L"                      ", x + 7, y + 10, WHITE);
 						CursorVisible(false);
 						break;
 					case 10:
@@ -1276,10 +1253,10 @@ void CUI::KeySettings()
 						{
 							m_2_sink_key = GetKey();
 							if (IllegalControlKey(m_2_sink_key))
-								PrintString("非法按键，请重新输入！", x + 9, y + 11, RED);
+								PrintString(L"非法按键，请重新输入！", x + 9, y + 11, RED);
 							else break;
 						}
-						PrintString("                      ", x + 9, y + 11, WHITE);
+						PrintString(L"                      ", x + 9, y + 11, WHITE);
 						CursorVisible(false);
 						break;
 					case 11:		//选择了“恢复默认设定”

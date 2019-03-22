@@ -347,7 +347,7 @@ void CBlock::PrintBlock(int x, int y) const
 	//在显示方块之前先把这块区域用空格填充
 	for (int i{ x }; i <= x + 3; i++)
 		for (int j{ y }; j <= y + 3; j++)
-			PrintString("  ", i, j, WHITE);
+			PrintString(L"  ", i, j, WHITE);
 
 	if (m_type == B_BOMB)
 	{
