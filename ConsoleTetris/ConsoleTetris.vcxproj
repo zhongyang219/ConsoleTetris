@@ -18,6 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Define.h" />
+    <ClInclude Include="Ini.h" />
+    <ClInclude Include="UI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E62ADC81-CD38-4F4A-BEC5-6FB78EECC2A8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -71,12 +80,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -145,16 +156,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="ConsoleTetris\Game.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ConsoleTetris\Block.h" />
-    <ClInclude Include="ConsoleTetris\Console.h" />
-    <ClInclude Include="ConsoleTetris\Define.h" />
-    <ClInclude Include="ConsoleTetris\Ini.h" />
-    <ClInclude Include="ConsoleTetris\UI.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
